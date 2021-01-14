@@ -1,0 +1,38 @@
+local player = game.Players.LocalPlayer
+local alreadyUsed = {}
+local gui = game:GetObjects("rbxassetid://4605192779")[1]
+
+gui.Parent = game.CoreGui
+local loadWords = game:HttpGet("https://raw.githubusercontent.com/fukaina/unnamed_repository/main/randomized_dict")
+local words = string.split(loadWords,"\n")
+
+function tableItemExists(array, val)
+for i,v in pairs (array) do 
+if v == val then 
+return true
+end
+end
+return false
+end
+
+gui.Frame.Search.MouseButton1Click:Connect(function()
+    local letters = ""
+    for i, v in pairs(game.Players.LocalPlayer.PlayerGui:GetDescendants()) do
+        if v:IsA("TextLabel") and v.Parent.Name == "Letter" then
+            if v.Text:len() == 1 then
+                letters = letters..v.Text
+            end
+        end
+    end
+    letters = letters:lower()
+    for i, v in pairs(words) do
+        if v:find(letters) then
+            if not tableItemExists(alreadyUsed, v) then
+	        gui.Frame.Letters.Text = "Found: ''" .. v .. "''"
+	        setclipboard(v)
+	        table.insert(alreadyUsed, v)
+	        break
+         end
+    end
+end
+end)
